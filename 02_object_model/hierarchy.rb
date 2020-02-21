@@ -101,6 +101,11 @@ end
 # - C5.new.another_name が文字列 "M1" を返す
 # - C5.new.other_name が文字列 "Refined M1" を返す
 module M1Refinements
+  refine M1 do
+    def name
+      "Refined M1"
+    end
+  end
 end
 
 class C5
@@ -125,4 +130,8 @@ end
 class C6
   include M1
   using M1Refinements
+
+  def name
+    super
+  end
 end
