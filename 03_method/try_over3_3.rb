@@ -108,13 +108,11 @@ class TryOver3::A4
 
   def self.const_missing(name)
     if @@runners.include?(name)
-      self.const_set name, Class.new do
-        def self.run
+      Class.new do
+        define_singleton_method :run do
           "run #{name}"
         end
       end
-
-      (self.const_get name).run
     else
       raise NameError
     end
