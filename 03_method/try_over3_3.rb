@@ -99,6 +99,28 @@ end
 # TryOver3::A4::Hoge.run
 # # => "run Hoge"
 
+class TryOver3::A4
+  @@runners
+
+  def self.runners=(runner_names)
+    @@runners = runner_names
+  end
+
+  def self.const_missing(name)
+    if @@runners.include?(name)
+      self.const_set name, Class.new do
+        def self.run
+          "run #{name}"
+        end
+      end
+
+      (self.const_get name).run
+    else
+      raise NameError
+    end
+  end
+end
+
 
 # Q5. チャレンジ問題！ 挑戦する方はテストの skip を外して挑戦してみてください。
 #
