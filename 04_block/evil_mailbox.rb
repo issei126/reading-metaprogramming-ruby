@@ -25,8 +25,9 @@ class EvilMailbox
 
     define_singleton_method :send_mail do |to, body, &proc|
       body = body + str if str
-      if
-        yield(@mail_obj.send_mail(to, body))
+
+      if proc
+        proc.call(@mail_obj.send_mail(to, body))
       else
         @mail_obj.send_mail(to, body)
       end
