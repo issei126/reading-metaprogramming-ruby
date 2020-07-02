@@ -5,7 +5,7 @@ require 'securerandom'
 class TestSimpleRecord < MiniTest::Test
   class Product
     include SimpleModel
-    
+
     attr_accessor :name, :description
   end
 
@@ -67,5 +67,26 @@ class TestSimpleRecord < MiniTest::Test
     obj.description = desc
     assert_equal name, obj.name
     assert_equal desc, obj.description
+  end
+
+  class MultipleAccessorsProduct
+    include SimpleModel
+
+    attr_accessor :name
+    attr_accessor :description
+  end
+
+  def test_multiple_accessors
+    obj = MultipleAccessorsProduct.new(name: 'SmarterHR', description: 'more smart SmartHR')
+    assert_equal 'SmarterHR', obj.name
+    assert_equal 'more smart SmartHR', obj.description
+  end
+
+  def test_multiple_accessors_writer
+    obj = MultipleAccessorsProduct.new(name: 'SmarterHR', description: 'more smart SmartHR')
+    obj.name = 'Ultra SmarterHR'
+    obj.description = 'more smart SmarterHR'
+    assert_equal 'Ultra SmarterHR', obj.name
+    assert_equal 'more smart SmarterHR', obj.description
   end
 end
