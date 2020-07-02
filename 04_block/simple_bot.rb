@@ -26,6 +26,8 @@
 class SimpleBot
   class << self
     @@settings = {}
+    @@keywords = {}
+    @@blocks = {}
 
     Settings = Class.new do
       define_method :method_missing do |method|
@@ -38,8 +40,8 @@ class SimpleBot
     end
 
     def respond(keyword, &block)
-      @@keyword = keyword
-      @@block = block
+      @@keywords[keyword] = keyword
+      @@blocks[keyword] = block
     end
 
     def setting(key, value)
@@ -52,7 +54,7 @@ class SimpleBot
   end
 
   def ask(keyword)
-    @@block.call if @@keyword == keyword
+    @@blocks[keyword].call if @@keywords.has_key?(keyword)
   end
 
 end
