@@ -39,6 +39,8 @@
 # ```
 
 module SimpleMock
+  @@called_times = {}
+
   def self.new
     obj = Object.new
     self.mock(obj)
@@ -46,5 +48,31 @@ module SimpleMock
 
   def self.mock(obj)
     obj.extend self
+  end
+
+  def self.extended(obj)
+    obj.methods.each do |method|
+      old_method = obj.method method
+
+      define_singleton_method method do
+        @@called_times[method] += 1 if @@called_times.has_key?(method)
+        old_method.call
+      end
+    end
+  end
+
+  def expects(method_name_sym, return_value)
+    define_singleton_method method_name_sym do
+      @@called_times[method_name_sym] += 1 if @@called_times.has_key?(method_name_sym)
+      return_value
+    end
+  end
+
+  def watch(method_name_sym)
+    @@called_times[method_name_sym] = 0
+  end
+
+  def called_times(method_name_sym)
+    @@called_times[method_name_sym]
   end
 end
