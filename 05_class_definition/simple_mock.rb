@@ -37,3 +37,14 @@
 # obj.imitated_method #=> true
 # obj.called_times(:imitated_method) #=> 2
 # ```
+
+module SimpleMock
+  def self.new
+    obj = Object.new
+    self.mock(obj)
+  end
+
+  def self.mock(obj)
+    obj.extend self
+  end
+end
