@@ -39,40 +39,41 @@
 # ```
 
 module SimpleMock
-  @@called_times = {}
-
   def self.new
     obj = Object.new
     self.mock(obj)
   end
 
   def self.mock(obj)
+    called_times_hash = {}
     obj.extend self
+    obj.instance_variable_set(:@called_times, {})
+    obj
   end
 
-  def self.extended(obj)
-    obj.methods.each do |method|
-      old_method = obj.method method
-
-      define_singleton_method method do
-        @@called_times[method] += 1 if @@called_times.has_key?(method)
-        old_method.call
-      end
+  def hoge
+    if @called_times.has_key?(:hoge)
+      @called_times[:hoge] += 1
+    else
+      @called_times[:hoge] = 1
     end
+    super
   end
 
   def expects(method_name_sym, return_value)
     define_singleton_method method_name_sym do
-      @@called_times[method_name_sym] += 1 if @@called_times.has_key?(method_name_sym)
+      if @called_times.has_key?(method_name_sym)
+        @called_times[method_name_sym] += 1
+      end
       return_value
     end
   end
 
   def watch(method_name_sym)
-    @@called_times[method_name_sym] = 0
+    @called_times[method_name_sym] = 0
   end
 
   def called_times(method_name_sym)
-    @@called_times[method_name_sym]
+    @called_times[method_name_sym]
   end
 end
