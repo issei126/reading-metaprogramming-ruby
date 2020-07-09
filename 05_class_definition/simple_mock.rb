@@ -45,19 +45,19 @@ module SimpleMock
   end
 
   def self.mock(obj)
-    called_times_hash = {}
-    obj.extend self
     obj.instance_variable_set(:@called_times, {})
-    obj
-  end
-
-  def hoge
-    if @called_times.has_key?(:hoge)
-      @called_times[:hoge] += 1
-    else
-      @called_times[:hoge] = 1
+    obj.methods.each do |method|
+      define_method method do |*args, &block|
+        if @called_times.has_key?(method)
+          @called_times[method] += 1
+        else
+          @called_times[method] = 1
+        end
+        super(*args, &block)
+      end
     end
-    super
+    obj.extend self
+    obj
   end
 
   def expects(method_name_sym, return_value)
